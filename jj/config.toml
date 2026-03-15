@@ -1,0 +1,38 @@
+[user]
+name = "YayL"
+email = "jonasbeast9@gmail.com"
+
+[git]
+colocate = false
+
+[diff]
+tool = "delta"
+
+[ui]
+editor = "nvim"
+default-command = "log"
+diff-editor = "meld"
+merge-editor = "meld"
+diff-formatter = ":git" # Required by delta
+pager=["delta", "--pager", "less -FR"]
+
+[[--scope]]
+--when.commands = ["diff", "show"]
+
+[--scope.ui]
+pager = "delta"
+
+[jj-fzf]
+show-keys = false
+
+[revset-aliases]
+'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
+'closest_bookmark(to)' = 'heads(::to & bookmarks())'
+[aliases]
+tug = ["util", "exec", "--", "sh", "-c", """
+if [ "x$1" = "x" ]; then
+  jj bookmark move --from "closest_bookmark(@)" --to "closest_pushable(@)"
+else
+  jj bookmark move --to "closest_pushable(@)" "$@"
+fi
+""", ""]
